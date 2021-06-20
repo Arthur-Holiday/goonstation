@@ -346,14 +346,18 @@ ABSTRACT_TYPE(/obj/item/gun/kinetic)
 /obj/item/gun/kinetic/minigun
 	name = "Minigun"
 	desc = "The M134 Minigun is a 7.62×51mm NATO, six-barrel rotary machine gun with a high rate of fire."
+	icon = 'icons/obj/large/48x32.dmi'
 	icon_state = "minigun"
-	item_state = "heavy"
+	item_state = "minigun"
+	wear_image_icon = 'icons/mob/back.dmi'
 	force = MELEE_DMG_LARGE
 	caliber = 0.308
 	max_ammo_capacity = 100
 	auto_eject = 1
 
-	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY | EXTRADELAY
+	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY | EXTRADELAY | ONBACK
+	object_flags = NO_ARM_ATTACH
+	c_flags = NOT_EQUIPPED_WHEN_WORN | EQUIPPED_WHILE_HELD
 
 	spread_angle = 25
 	can_dual_wield = 0
@@ -367,6 +371,8 @@ ABSTRACT_TYPE(/obj/item/gun/kinetic)
 	New()
 		ammo = new/obj/item/ammo/bullets/minigun
 		set_current_projectile(new/datum/projectile/bullet/minigun)
+		projectiles = list(current_projectile, new/datum/projectile/bullet/minigun/auto)
+		AddComponent(/datum/component/holdertargeting/fullauto, 1.5 DECI SECONDS, 1.5 DECI SECONDS, 1)
 		..()
 
 	setupProperties()

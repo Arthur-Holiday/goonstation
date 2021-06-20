@@ -506,6 +506,13 @@ toxic - poisons
 	implanted = /obj/item/implant/projectile/bullet_308
 	casing = /obj/item/casing/rifle
 
+	auto
+		fullauto_valid = 1
+		sname = "full auto"
+		shot_volume = 66
+		cost = 1
+		shot_number = 1
+
 /datum/projectile/bullet/minigun/turret
 	power = 15
 	dissipation_delay = 8

@@ -354,12 +354,12 @@ var/datum/action_controller/actions
 /datum/action/bar/icon //Visible to everyone and has an icon.
 	var/icon
 	var/icon_state
-	var/icon_y_off = 35
+	var/icon_y_off = 30
 	var/icon_x_off = 0
 	var/image/icon_image
-	var/icon_plane = PLANE_HUD + 2
-	/// Is the icon also on the target if we have one?
-	var/icon_on_target = TRUE
+	var/icon_plane = PLANE_HUD
+	/// Is the icon also on the target if we have one? if this is TRUE, make sure the target only handles overlays by using the UpdateOverlays proc.
+	var/icon_on_target = FALSE
 
 	onStart()
 		..()
@@ -369,15 +369,21 @@ var/datum/action_controller/actions
 			icon_image.pixel_x = icon_x_off
 			icon_image.plane = icon_plane
 			icon_image.filters += filter(type="outline", size=0.5, color=rgb(255,255,255))
-			owner.overlays += icon_image
 			if (icon_on_target && place_to_put_bar)
-				place_to_put_bar.overlays += icon_image
+				icon_image.pixel_y = 35
+				owner.UpdateOverlays(icon_image, "action_icon")
+				place_to_put_bar.UpdateOverlays(icon_image, "action_icon")
+			else
+				icon_image.pixel_y = 30
+				border.UpdateOverlays(icon_image, "action_icon")
 
 	onDelete()
-		if (owner)
-			owner.overlays -= icon_image
 		if (icon_on_target && place_to_put_bar)
-			place_to_put_bar.overlays -= icon_image
+			place_to_put_bar.UpdateOverlays(null, "action_icon")
+			if (owner)
+				owner.UpdateOverlays(null, "action_icon")
+		else if (border)
+			border.UpdateOverlays(null, "action_icon")
 		if (icon_image)
 			del(icon_image)
 		..()
@@ -1153,7 +1159,7 @@ var/datum/action_controller/actions
 	pooled()
 		loc = null
 		attached_objs = list()
-		overlays.len = 0
+		ClearAllOverlays()
 		..()
 
 	set_icon_state(new_state)
@@ -1179,7 +1185,7 @@ var/datum/action_controller/actions
 	pooled()
 		loc = null
 		attached_objs = list()
-		overlays.len = 0
+		ClearAllOverlays()
 		..()
 
 	set_icon_state(new_state)
